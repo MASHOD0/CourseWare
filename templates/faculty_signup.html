@@ -1,7 +1,84 @@
 {% extends "base.html" %}
 
 {% block title %}
+Faculty Signup
 {% endblock %}
 
 {% block content %}
+
+<form action="#" method='POST'>
+    <table>
+        <caption
+            style="font-size: xx-large; font-weight: bold; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: black;">
+            Teacher Signup</caption>
+
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Name:</font>
+            </td>
+            <td>
+                <input type="text" name="Name" placeholder="Name" size="47">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Email:</font>
+            </td>
+            <td>
+                <input type="email" name="Email" size="47">
+            </td>
+        </tr>
+        <tr>
+            <td class="select">
+                <font size="5" color="#000000">Department:</font>
+            </td>
+            <TD>
+                <select name="Department">
+                    <option value="AE">Areonautical Engineering</option>
+                    <option value="AI">Artifical intelligence and Machine learning</option>
+                    <option value="AU">Automobile Engineering</option>
+                    <option value="BT">Bio-Technology</option>
+                    <option value="CH">Chemical Engineering</option>
+                    <option value="CS">Computer Science and Engineering</option>
+                    <option value="CV">Civil Engineering</option>
+                    <option value="EC">Electronics & Communication Engineering</option>
+                    <option value="EE">Electrical & Electronics Engineering</option>
+                    <option value="ET">Electronics and Telecomunication Engineering</option>
+                    <option value="IM">Industrial Engineering and Management</option>
+                    <option value="IS">Information Science & Engineering</option>
+                    <option value="MD">Electronics and Medical Engineering</option>
+                    <option value="ME">Mechanical Engineering</option>
+                    <option value="PY">Physics </option>
+                    <option value="CE">Chemistry</option>
+                    <option value="MA">Mathematics</option>
+                </select>
+            </TD>
+
+        </tr>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Password:</font>
+            </td>
+            <td>
+                <input type="Password" name="Password" size="47" placeholder="Enter Password">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Confirm Password:</font>
+            </td>
+            <td>
+                <input type="Password" name="Confirm Password" size="47" placeholder="Confirm Password">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" value="submit" style="font-size: larger;" />
+            </td>
+
+        </tr>
+    </table>
+
+</form>
+
 {% endblock %}
