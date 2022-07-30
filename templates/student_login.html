@@ -1,7 +1,42 @@
 {% extends "base.html" %}
 
 {% block title %}
+<h1>Student login</h1>
 {% endblock %}
+<form action="#" method='POST'>
+    <table>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> USN:</font>
+            </td>
+            <td>
+                <input type="text" name="USN" placeholder="Enter USN" size="47">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Password:</font>
+            </td>
+            <td>
+                <input type="Password" name="Password" size="47" placeholder="Enter Password">
+            </td>
+
+        </tr>
+    </table>
+    <tr>
+        <td>
+            <input type="submit" style="font-size: larger;" value="sign-in" />
+
+        </td>
+
+    </tr>
+</form>
+<br>
+<form action="/signup" class="inline">
+    <button class="float-left submit-button">
+        <font size="10">Signup</font>
+    </button>
+</form>
 
 {% block content %}
 {% endblock %}
