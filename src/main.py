@@ -109,12 +109,20 @@ def faculty_login():
     else:
         return render_template('faculty_login.html')
         
-
+@app.route('/admin_login')
 def admin_login():
     """
     returns the admin login page
     """
-    # TODO
+    if request.method == 'POST':
+        password = request.form['Password']
+        if password == 'admin':
+            return render_template('control.html')
+        else:
+            return render_template('admin_login.html')
+    else:
+        return render_template('admin_login.html')
+
 @app.route('/logout')
 def logout():
     if session['username']:
