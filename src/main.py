@@ -97,8 +97,20 @@ def faculty_login():
     """
     returns login page for faculty
     """
-    
-    
+    if request.method == 'POST':
+        name = request.form['Name']
+        password = request.form['Password']
+        hash_pw = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
+        fetch_pw = db.fetch(conn, q.get_teacher_pw.format(name))[0][0]
+        if fetch_pw == hash_pw.hex():
+            print('login successfull!!!')
+            return redirect('/faculty')
+        else:
+            return render_template('faculty_login.html')
+    else:
+        return render_template('faculty_login.html')
+        
+
 def admin_login():
     """
     returns the admin login page
