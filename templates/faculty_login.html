@@ -1,7 +1,44 @@
 {% extends "base.html" %}
 
 {% block title %}
+<h1>facutly login</h1>
 {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+
+<!-- border-radius: 10px; margin-top: 70px; -->
+<form action="#" method='POST'>
+    <table style="margin: auto; border: 3px solid black; padding: 30px;">
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Name:</font>
+            </td>
+            <td>
+                <input type="text" name="Name" placeholder="Enter Username" size="47">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="5" color="#000000"> Password:</font>
+            </td>
+            <td>
+                <input type="Password" name="Password" size="47" placeholder="Enter Password">
+            </td>
+        </tr>
+    </table>
+    <tr>
+        <td>
+            <font size="10"><input type="submit" style="font-size: larger;" value="sign-in" /> </font>
+        </td>
+    </tr>
+</form>
+
+<br>
+<form action="/TSignup" class="inline">
+    <button class="float-left submit-button">
+        <font size="10">Signup</font>
+    </button>
+</form>
 {% endblock %}
