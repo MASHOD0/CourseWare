@@ -59,8 +59,7 @@ def faculty_signup():
         department = request.form['Department']
         password = request.form['Password']
         c_password = request.form['Confirm Password']
-        dk = hashlib.pbkdf2_hmac('sha256', bytes(
-            password, 'utf-8'), b'salt', 100000)
+        dk = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
 
         if password == c_password:
             db.execute(conn, q.add_new_teacher.format(
@@ -115,9 +114,14 @@ def admin_login():
     """
     returns the admin login page
     """
-    #TODO
-
+    # TODO
+@app.route('/logout')
+def logout():
+    if session['username']:
+        session.clear()
+    return redirect('/')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug = True)
+    db.close(conn)
