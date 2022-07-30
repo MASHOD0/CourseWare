@@ -11,6 +11,7 @@ KEY = 'aljflajfoAWHAOGAJ'
 
 app = Flask(__name__)
 app.secret_key = KEY
+conn = db.fypDB_Connect()
 
 # HOME PAGE
 @app.route('/')
