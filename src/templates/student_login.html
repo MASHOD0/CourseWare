@@ -3,6 +3,8 @@
 {% block title %}
 <h1>Student login</h1>
 {% endblock %}
+
+{% block content %}
 <form action="#" method='POST'>
     <table>
         <tr>
@@ -32,11 +34,10 @@
     </tr>
 </form>
 <br>
-<form action="/signup" class="inline">
+<form action="/student_signup" class="inline">
     <button class="float-left submit-button">
         <font size="10">Signup</font>
     </button>
 </form>
 
-{% block content %}
 {% endblock %}
