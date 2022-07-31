@@ -14,12 +14,15 @@ app.secret_key = KEY
 conn = db.fypDB_Connect()
 
 # HOME PAGE
+
+
 @app.route('/')
 def home():
     """
     returns the base home page, with login options
     """
     return render_template('home.html')
+
 
 @app.route('/student_signup', methods=['GET', 'POST'])
 def student_signup():
@@ -36,18 +39,21 @@ def student_signup():
         c_password = request.form['Confirm Password']
 
         # password hash
-        dk = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
-       
+        dk = hashlib.pbkdf2_hmac('sha256', bytes(
+            password, 'utf-8'), b'salt', 100000)
+
         section_id = db.fetch(conn, q.get_section_id.format(section))
         sectionId = section_id[0][0]
 
         if password == c_password:
-            db.execute(conn,q.add_new_student.format(sectionId, usn, name, dk.hex(), email, branch))
+            db.execute(conn, q.add_new_student.format(
+                sectionId, usn, name, dk.hex(), email, branch))
             return redirect("/student_login")
         else:
             return redirect("/student_signup")
     else:
         return render_template("student_signup.html")
+
 
 @app.route('/faculty_signup', methods=['GET', 'POST'])
 def faculty_signup():
@@ -60,7 +66,8 @@ def faculty_signup():
         department = request.form['Department']
         password = request.form['Password']
         c_password = request.form['Confirm Password']
-        dk = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
+        dk = hashlib.pbkdf2_hmac('sha256', bytes(
+            password, 'utf-8'), b'salt', 100000)
 
         if password == c_password:
             db.execute(conn, q.add_new_teacher.format(
@@ -80,7 +87,8 @@ def student_login():
     if request.method == 'POST':
         usn = request.form['USN']
         password = request.form['Password']
-        hash_pw = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
+        hash_pw = hashlib.pbkdf2_hmac(
+            'sha256', bytes(password, 'utf-8'), b'salt', 100000)
 
         fetch_pw = db.fetch(conn, q.get_student_pw.format(usn))[0][0]
         if fetch_pw == hash_pw.hex():
@@ -92,6 +100,7 @@ def student_login():
     else:
         return render_template('student_login.html')
 
+
 @app.route('/faculty_login', methods=['GET', 'POST'])
 def faculty_login():
     """
@@ -100,7 +109,8 @@ def faculty_login():
     if request.method == 'POST':
         name = request.form['Name']
         password = request.form['Password']
-        hash_pw = hashlib.pbkdf2_hmac('sha256', bytes(password, 'utf-8'), b'salt', 100000)
+        hash_pw = hashlib.pbkdf2_hmac(
+            'sha256', bytes(password, 'utf-8'), b'salt', 100000)
         fetch_pw = db.fetch(conn, q.get_teacher_pw.format(name))[0][0]
         if fetch_pw == hash_pw.hex():
             print('login successfull!!!')
@@ -109,7 +119,8 @@ def faculty_login():
             return render_template('faculty_login.html')
     else:
         return render_template('faculty_login.html')
-        
+
+
 @app.route('/admin_login')
 def admin_login():
     """
@@ -125,8 +136,7 @@ def admin_login():
         return render_template('admin_login.html')
 
 
-
-@app.route('/student')
+@app.route('/student', methods=['GET', 'POST'])
 def student():
     """
     Returns the student home page
@@ -134,9 +144,11 @@ def student():
     if session['username']:
         now = datetime.datetime.now()
         day = now.strftime('%A')
-        classes = db.fetch(conn, q.get_classes.format(session['username'], day))
+        classes = db.fetch(conn, q.get_classes.format(
+            session['username'], day))
         grades = db.fetch(conn, q.get_grades.format(session['username']))
-        attendance_list = db.fetch(conn, q.get_attendance.format(session['username']))
+        attendance_list = db.fetch(
+            conn, q.get_attendance.format(session['username']))
         attendance_percent = []
         for i in range(len(attendance_list)):
             if attendance_list[i][1] == None:
@@ -145,11 +157,23 @@ def student():
                 percent = (
                     (attendance_list[i][2] - attendance_list[i][1]) / attendance_list[i][2])
             attendance_percent.append(percent * 100)
-        
+
         return render_template('student.html', classes=classes, class_len=len(classes), grades=grades, grade_len=len(grades), list=attendance_list, percent=attendance_percent, list_len=len(attendance_list))
     else:
         return redirect('/student_login')
 
+
+@app.route('/faculty')
+def faculty():
+    if session['username']:
+        # getting the day
+        now = datetime.datetime.now()
+        day = now.strftime("%A")
+        classes = db.fetch(conn, q.get_teacher_cls.format(
+            session['username'], day))
+        return render_template('faculty.html', classes=classes, name=session['username'], class_len=len(classes))
+    else:
+        return redirect('/faculty_login')
 
 
 @app.route('/logout')
@@ -160,5 +184,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug = True)
+    app.run(host='0.0.0.0', debug=True)
     db.close(conn)
