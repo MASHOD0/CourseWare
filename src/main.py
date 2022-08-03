@@ -387,6 +387,17 @@ def sections():
         return render_template("create_sections.html")
 
 
+@app.route("/create_courses", methods=["GET", "POST"])
+def courses():
+    if request.method == "POST":
+        course = request.form["course"]
+        department = request.form["department"]
+        db.execute(conn, q.add_courses.format(department, course))
+        return render_template("control.html")
+    else:
+        return render_template("create_courses.html")
+
+
 @app.route('/logout')
 def logout():
     if session[USERNAME]:
