@@ -376,6 +376,16 @@ def attendance1():
         return redirect('/faculty_login')
 
 
+@app.route("/create_sections", methods=["GET", "POST"])
+def sections():
+    if request.method == "POST":
+        name = request.form["section"]
+        sem = int(request.form["semester"])
+        db.execute(conn, q.add_sections.format(sem, name))
+        return render_template("control.html")
+    else:
+        return render_template("create_sections.html")
+
 
 @app.route('/logout')
 def logout():
