@@ -199,6 +199,45 @@ def faculty():
         return redirect('/faculty_login')
 
 
+@app.route("/schedule", methods=methods)
+def schedule():
+    """
+    Page for scheduling classes
+    """
+    # getting `courses` list
+    getcourses = db.fetch(conn, q.get_all_courses)
+    courses = []
+    for i in range(len(getcourses)):
+        if getcourses != None:
+            courses.append(getcourses[i][0])
+
+    if session[USERNAME]:
+        if request.method == POST:
+            if session[USERNAME]:
+                section = request.form[SECTION]
+                n = int(request.form[COURSE])
+                course = courses[n]
+                link = request.form[LINK]
+                day = request.form[DAY]
+                time = request.form[TIME]
+                section_id = db.fetch(conn, q.get_section_id.format(section))
+                teacher_id = db.fetch(
+                    conn, q.get_teacher_id.format(session[USERNAME]))
+                course_id = db.fetch(conn, q.get_courseId.format(course))
+
+                db.execute(conn, q.add_class.format(
+                    section_id[0][0], course_id[0][0], link, day, time, teacher_id[0][0]))
+
+                return redirect('/faculty')
+            else:
+                return redirect('/faculty_login')
+        else:
+
+            return render_template("schedule.html", courses=courses, course_len=len(courses))
+    else:
+        return redirect('/faculty_login')
+
+
 
 
 @app.route('/logout')
