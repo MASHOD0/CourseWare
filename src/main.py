@@ -279,6 +279,53 @@ def grades1():
         return redirect('/faculty_login')
 
 
+@app.route('/update', methods=methods)
+def update():
+    if session[USERNAME]:
+        # getting the list of courses
+        courses_and_ids = db.fetch(conn, q.get_courses)
+        courses = []
+        course_id = []
+
+        for i in range(len(courses_and_ids)):
+            courses.append(courses_and_ids[i][1])
+        for i in range(len(courses_and_ids)):
+            course_id.append(courses_and_ids[i][0])
+
+        # getting the list of sections
+        sections_and_ids = db.fetch(conn, q.get_sections)
+        section_id = []
+        sections = []
+
+        for i in range(len(sections_and_ids)):
+            section_id.append(sections_and_ids[i][0])
+        for i in range(len(sections_and_ids)):
+            sections.append(sections_and_ids[i][1])
+
+        if request.method == POST:
+            section_id = int(request.form[SECTION])
+            course_id = int(request.form[COURSE])
+            semester = int(request.form[SEMESTER])
+            student_id = db.fetch(conn, q.get_section.format(section_id))
+
+            for i in range(len(student_id)):
+                db.execute(conn, q.add_student_to_grades.format(
+                    student_id[i][0], course_id, semester, section_id))
+                print("student added to grades")
+
+            for i in range(len(student_id)):
+                db.execute(conn, q.add_student_to_attendance.format(
+                    student_id[i][0], course_id, section_id))
+                print("student added to attendance")
+
+            return redirect('/faculty')
+        else:
+            return render_template("update.html", section_id=section_id, sections=sections,
+                                   sect_len=len(sections), course_id=course_id, course=courses, course_len=len(courses))
+    else:
+        return redirect('/faculty_login')
+
+
 
 @app.route('/logout')
 def logout():
