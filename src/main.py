@@ -238,6 +238,22 @@ def schedule():
         return redirect('/faculty_login')
 
 
+@app.route('/grades', methods=methods)
+def grades():
+    """
+    Returns page to select class section and exam to enter grades in
+    """
+    if session[USERNAME]:
+        get_section_subject = db.fetch(conn, q.get_section_from_grades)
+        if request.method == POST:
+            session[SECTION] = int(request.form['section_course'])
+            session[EXAM] = request.form[EXAM]
+            return redirect('/grades1')
+        else:
+            return render_template('grades.html', list=get_section_subject, list_len=len(get_section_subject))
+    else:
+        return redirect('/faculty_login')
+
 
 
 @app.route('/logout')
