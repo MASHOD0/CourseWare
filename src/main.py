@@ -342,6 +342,40 @@ def attendance():
         return redirect('/faculty_login')
 
 
+@app.route('attendance1', methods=methods)
+def attendance1():
+    if session[USERNAME]:
+        section = session[ATTENDANCE]
+        get_section_subject = db.fetch(conn, q.get_section_from_attendance)
+        get_usn = db.fetch(conn, q.get_section_name.format(
+            get_section_subject[section][0], get_section_subject[section][1]))
+        print(get_usn)
+        if request.method == POST:
+            absentee = request.form.getlist(ABSENTEE)
+            absentee = [int(i) for i in absentee]
+
+            print(absentee)
+            for i in range(len(get_usn)):
+                db.execute(conn, q.add_total.format(
+                    total, get_usn[i][0], get_section_subject[section][1], get_section_subject[section][0]))
+            for i in range(len(absentee)):
+                missed = db.fetch(conn, q.get_missed.format(
+                    get_usn[absentee[i]][0], get_section_subject[section][1], get_section_subject[section][0]))
+                missed_int = missed[0][0]
+                if missed_int == None:
+                    missed_int = 1
+                else:
+                    missed_int += 1
+                db.execute(conn, q.add_missed.format(
+                    missed_int, get_usn[absentee[i]][0], get_section_subject[section][1], get_section_subject[section][0]))
+
+            return redirect('/grades')
+        else:
+           return render_template("attendance1.html", usn_list=get_usn, usn_len=len(get_usn))
+    else:
+        return redirect('/faculty_login')
+
+
 
 @app.route('/logout')
 def logout():
