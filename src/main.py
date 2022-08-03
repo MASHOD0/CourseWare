@@ -326,6 +326,22 @@ def update():
         return redirect('/faculty_login')
 
 
+@app.route('/attendance', methods=methods)
+def attendance():
+    """
+    Returns a page to select class and subject to give attendance to
+    """
+    if session[USERNAME]:
+        get_section_subject = db.fetch(conn, q.get_section_from_attendance)
+        if request.method == POST:
+            session[ATTENDANCE] = int(request.form[SECTION_COURSE])
+            return redirect('/attendance1')
+        else:
+            return render_template("attendance.html", list=get_section_subject, list_len=len(get_section_subject))
+    else:
+        return redirect('/faculty_login')
+
+
 
 @app.route('/logout')
 def logout():
