@@ -255,6 +255,30 @@ def grades():
         return redirect('/faculty_login')
 
 
+@app.route('/grades1', methods=methods)
+def grades1():
+    """
+    Returns page to enter the grades of a particular class and subject
+    """
+    if session[USERNAME]:
+        section = session[SECTION]
+        exam = session[EXAM]
+        get_section_subject = db.fetch(conn, q.get_section_from_grades)
+        get_usn = db.fetch(conn, q.get_section_usn.format[section][0])
+        print(get_usn)
+        if request.method == POST:
+            for i in range(len(get_usn)):
+                marks = int(request.form[str(i)])
+                db.execute(conn, q.update_grades.format(
+                    exam, marks, get_usn[i][0]))
+
+            return redirect('/grades')
+        else:
+            return render_template("grades1.html", usn=get_usn, usn_len=len(get_usn))
+    else:
+        return redirect('/faculty_login')
+
+
 
 @app.route('/logout')
 def logout():
