@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, session
 from werkzeug.utils import redirect
+import PyPDF2
+import os
+import watermark
 
 import hashlib
 import datetime
@@ -9,7 +12,7 @@ from DB import db, query as q
 methods = ['GET', 'POST']
 USERNAME = 'username'
 EMAIL = 'Email'
-PASSWORD = 'Passoword'
+PASSWORD = 'Password'
 POST = 'POST'
 USN = 'USN'
 NAME = 'Name'
@@ -27,10 +30,13 @@ SEMESTER = 'Semester'
 ATTENDANCE = 'Attendance'
 SECTION_COURSE = 'Section_Course'
 ABSENTEE = 'absentee'
-
+UPLOAD_FOLDER = 'uploads'
+FILE = 'file'
 
 app = Flask(__name__)
 app.secret_key = KEY
+app.config['SESSION_TYPE'] = 'filesystem'
+
 conn = db.fypDB_Connect()
 
 # HOME PAGE
@@ -49,12 +55,14 @@ def student_signup():
     """
     returns the student signup page, with option to signup for the courseware
     """
+    departments = db.fetch(conn, q.get_all_depts)
+    sections = db.fetch(conn, q.get_all_sections)
     if request.method == POST:
         usn = request.form[USN]
         password = request.form[PASSWORD]
         name = request.form[NAME]
         email = request.form[EMAIL]
-        section = request.form[SECTION]
+        sectionId = request.form[SECTION]
         branch = request.form[BRANCH]
         c_password = request.form[CPASSWORD]
 
@@ -62,17 +70,15 @@ def student_signup():
         dk = hashlib.pbkdf2_hmac('sha256', bytes(
             password, 'utf-8'), b'salt', 100000)
 
-        section_id = db.fetch(conn, q.get_section_id.format(section))
-        sectionId = section_id[0][0]
 
-        if password == c_password:
+        if password == c_password and len(password) > 8:
             db.execute(conn, q.add_new_student.format(
-                sectionId, usn, name, dk.hex(), email, branch))
+                sectionId, usn, name, dk.hex(), email, int(branch)))
             return redirect("/student_login")
         else:
             return redirect("/student_signup")
     else:
-        return render_template("student_signup.html")
+        return render_template("student_signup.html", departments=departments, sections=sections)
 
 
 @app.route('/faculty_signup', methods=methods)
@@ -80,6 +86,7 @@ def faculty_signup():
     """
     returns the faculty signup page with option to signup for the college
     """
+    departments = db.fetch(conn, q.get_all_depts)
     if request.method == POST:
         name = request.form[NAME]
         email = request.form[EMAIL]
@@ -91,12 +98,12 @@ def faculty_signup():
 
         if password == c_password:
             db.execute(conn, q.add_new_teacher.format(
-                name, dk.hex(), email, department))
+                department, name, dk.hex(), email))
             return redirect("/faculty_login")
         else:
             return redirect("/faculty_signup")
     else:
-        return render_template("faculty_signup.html")
+        return render_template("faculty_signup.html", departments=departments)
 
 
 @app.route('/student_login', methods=methods)
@@ -167,7 +174,7 @@ def student():
         now = datetime.datetime.now()
         day = now.strftime('%A')
         classes = db.fetch(conn, q.get_classes.format(
-            session[USERNAME], day))
+            day, session[USERNAME]))
         grades = db.fetch(conn, q.get_grades.format(session[USERNAME]))
         attendance_list = db.fetch(
             conn, q.get_attendance.format(session[USERNAME]))
@@ -342,7 +349,8 @@ def attendance():
         return redirect('/faculty_login')
 
 
-@app.route('attendance1', methods=methods)
+
+@app.route('/attendance1', methods=methods)
 def attendance1():
     if session[USERNAME]:
         section = session[ATTENDANCE]
@@ -372,6 +380,40 @@ def attendance1():
             return redirect('/grades')
         else:
            return render_template("attendance1.html", usn_list=get_usn, usn_len=len(get_usn))
+    else:
+        return redirect('/faculty_login')
+
+@app.route('/add_material', methods=methods)
+def add_material():
+    """
+    Returns a page where the user inputs a pdf file which gets watermarked using `watermark()`
+    and gets stored at a local folder
+    """
+    if session[USERNAME]:
+        if request.method == POST:
+            file = request.files[FILE]
+            file.save(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
+            watermark(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
+            db.execute(conn, q.add_material.format(session[USERNAME], file.filename))
+            return redirect('/faculty')
+        else:
+            return render_template("add_material.html")
+    else:
+        return redirect('/faculty_login') 
+
+
+@app.route('/view_material', methods=methods)
+def view_material():
+    """
+    Returns a page where the user can view the pdf files uploaded by the faculty
+    """
+    if session[USERNAME]:
+        if request.method == POST:
+            file = request.form[FILE]
+            return redirect('/view_material1')
+        else:
+            files = db.fetch(conn, q.view_material.format(session[USERNAME]))
+            return render_template("view_material.html", files=files, files_len=len(files))
     else:
         return redirect('/faculty_login')
 
