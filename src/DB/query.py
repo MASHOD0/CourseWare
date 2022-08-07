@@ -22,15 +22,15 @@ get_teacher_pw = """
 
 # 4-- adds new user in students table
 add_new_student = """
-                INSERT INTO student(student_id, section_id, "USN", "Name", password, email, branch)
-                VALUES (DEFAULT, {}, '{}', '{}', '{}', '{}', '{}');
+                INSERT INTO student(student_id, section_id, usn, name, password, email, department_id)
+                VALUES (DEFAULT, {}, '{}', '{}', '{}', '{}', {});
                 """
 
 # 5-- adds new user in teachers table
 add_new_teacher = """
-                INSERT INTO teachers (teacher_id, name, password, email, department) 
-                VALUES (DEFAULT, '{}', '{}', '{}', '{}');
-                 """
+                INSERT INTO faculty (faculty_id, department_id, name, password, email) 
+                VALUES (DEFAULT, {}, '{}', '{}', '{}');
+                """
 
 # 6-- gets classes for a given usn and day
 get_classes = """
