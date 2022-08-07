@@ -1,6 +1,6 @@
 from psycopg2 import connect
 
-DATABASE = "fyp-ver2"
+DATABASE = "cw-test1"
 USER = "postgres"
 PASSWORD = "postgres"
 HOST = "127.0.0.1"
