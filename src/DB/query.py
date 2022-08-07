@@ -1,10 +1,15 @@
 # 1-- gets section_id from sections
+get_all_depts = "SELECT department_id, department_name FROM department"
 get_section_id = """
                 SELECT section_id
                 FROM section
                 WHERE section = '{}';
                 """
-
+get_all_sections = """
+                    SELECT section.section_id, section.section, department.department_name
+                    FROM section
+                    JOIN department ON section.department_id = department.department_id;
+                """
 # 2-- gets password from student
 get_student_pw = """SELECT distinct password
                 FROM student
@@ -34,12 +39,12 @@ add_new_teacher = """
 
 # 6-- gets classes for a given usn and day
 get_classes = """
-                SELECT class_id,classes.course_id, "link", "time", courses.course_code, department
-                FROM classes
-                JOIN courses
-                ON classes.course_id = courses.course_id
-                WHERE section_id = (select section_id from student where "USN" = '{}' limit 1)
-                AND day = '{}';
+                SELECT classes.class_id, classes.course_id, classes.link, classes.time, faculty.name, courses.course_name, courses.course_code
+                    FROM classes
+                    JOIN faculty ON classes.faculty_id = faculty.faculty_id
+                    JOIN courses ON classes.course_id = courses.course_id
+                    WHERE day = '{}'
+                    AND classes.section_id = (select section_id from student where usn = '{}' limit 1);
                 """
 
 # 7-- gets classes for a given faculty name and day
@@ -168,16 +173,18 @@ get_missed = """SELECT missed
 
 # 29
 get_grades = """
-            select courses.course_code, semester, "CIE_1", "CIE_2", "CIE_3", "AAT", "SEE" from grades
-            inner join courses
-            on grades.course_id = courses.course_id
-            where student_id = (select student_id from student where "USN" = '{}');
+            SELECT courses.course_name, courses.course_code, grades.semester, grades.cie1, grades.cie2, grades.cie3, grades.aat, grades.see
+            FROM grades
+            JOIN courses
+            ON grades.course_id = courses.course_id
+            WHERE grades.student_id = (select student_id from student where usn = '{}' limit 1);    
             """
 
 # 30
 get_attendance = """
-                    select courses.course_code,  missed, total from "Attendance"
-                    inner join courses
-                    on "Attendance".course_id = courses.course_id
-                    where student_id = (select student_id from student where "USN" = '{}');
-                    """
+                    SELECT  courses.course_name, attendance.missed, attendance.total
+                    FROM attendance
+                    JOIN courses
+                    ON attendance.course_id = courses.course_id;
+                    WHERE attendance.student_id = (select student_id from student where usn = '{}' limit 1);
+                """
