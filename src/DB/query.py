@@ -1,21 +1,21 @@
 # 1-- gets section_id from sections
 get_section_id = """
                 SELECT section_id
-                FROM sections
+                FROM section
                 WHERE section = '{}';
                 """
 
 # 2-- gets password from student
 get_student_pw = """SELECT distinct password
                 FROM student
-                WHERE "USN" = '{}' 
+                WHERE usn = '{}' 
                 LIMIT  1;
                 """
 
 # 3-- gets password from teachers
 get_teacher_pw = """
                 SELECT distinct password
-                FROM teachers
+                FROM faculty
                 WHERE name = '{}' 
                 LIMIT  1;
                 """
