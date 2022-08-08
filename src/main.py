@@ -238,7 +238,7 @@ def schedule():
                 db.execute(conn, q.add_class.format(
                     section_id[0][0], course_id[0][0], link, day, time, teacher_id[0][0]))
 
-                return redirect('/faculty')
+                return redirect(FACULTY_PATH)
             else:
                 return redirect(FACULTY_LOGIN_PATH)
         else:
