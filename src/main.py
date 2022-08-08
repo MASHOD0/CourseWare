@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, session
 from werkzeug.utils import redirect
 import PyPDF2
 import os
-import watermark
+import time
 
 import hashlib
 import datetime
@@ -32,6 +32,8 @@ SECTION_COURSE = 'Section_Course'
 ABSENTEE = 'absentee'
 UPLOAD_FOLDER = 'uploads'
 FILE = 'file'
+FACULTY_PATH = '/faculty'
+FACULTY_LOGIN_PATH = '/faculty_login'
 
 app = Flask(__name__)
 app.secret_key = KEY
@@ -117,8 +119,9 @@ def student_login():
         hash_pw = hashlib.pbkdf2_hmac(
             'sha256', bytes(password, 'utf-8'), b'salt', 100000)
 
-        fetch_pw = db.fetch(conn, q.get_student_pw.format(usn))[0][0]
-        if fetch_pw == hash_pw.hex():
+        fetch_pw = db.fetch(conn, q.get_student_pw.format(usn))
+        pw = fetch_pw[0][0]
+        if pw == hash_pw.hex():
             print("login sucessful!!")
             session[USERNAME] = usn
             return redirect('/student')
@@ -128,7 +131,7 @@ def student_login():
         return render_template('student_login.html')
 
 
-@app.route('/faculty_login', methods=methods)
+@app.route(FACULTY_LOGIN_PATH, methods=methods)
 def faculty_login():
     """
     returns login page for faculty
@@ -142,7 +145,7 @@ def faculty_login():
         if fetch_pw == hash_pw.hex():
             session[USERNAME] = name
             print('login successfull!!!')
-            return redirect('/faculty')
+            return redirect(FACULTY_PATH)
 
         else:
             return render_template('faculty_login.html')
@@ -150,7 +153,7 @@ def faculty_login():
         return render_template('faculty_login.html')
 
 
-@app.route('/admin_login')
+@app.route('/admin_login', methods=methods)
 def admin_login():
     """
     returns the admin login page
@@ -193,7 +196,7 @@ def student():
         return redirect('/student_login')
 
 
-@app.route('/faculty')
+@app.route(FACULTY_PATH)
 def faculty():
     if session[USERNAME]:
         # getting the day
@@ -203,7 +206,7 @@ def faculty():
             session[USERNAME], day))
         return render_template('faculty.html', classes=classes, name=session[USERNAME], class_len=len(classes))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 @app.route("/schedule", methods=methods)
@@ -237,12 +240,12 @@ def schedule():
 
                 return redirect('/faculty')
             else:
-                return redirect('/faculty_login')
+                return redirect(FACULTY_LOGIN_PATH)
         else:
 
             return render_template("schedule.html", courses=courses, course_len=len(courses))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 @app.route('/grades', methods=methods)
@@ -259,7 +262,7 @@ def grades():
         else:
             return render_template('grades.html', list=get_section_subject, list_len=len(get_section_subject))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 @app.route('/grades1', methods=methods)
@@ -283,7 +286,7 @@ def grades1():
         else:
             return render_template("grades1.html", usn=get_usn, usn_len=len(get_usn))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 @app.route('/update', methods=methods)
@@ -330,7 +333,7 @@ def update():
             return render_template("update.html", section_id=section_id, sections=sections,
                                    sect_len=len(sections), course_id=course_id, course=courses, course_len=len(courses))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 @app.route('/attendance', methods=methods)
@@ -346,7 +349,7 @@ def attendance():
         else:
             return render_template("attendance.html", list=get_section_subject, list_len=len(get_section_subject))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
 
 
@@ -381,41 +384,27 @@ def attendance1():
         else:
            return render_template("attendance1.html", usn_list=get_usn, usn_len=len(get_usn))
     else:
-        return redirect('/faculty_login')
+        return redirect(FACULTY_LOGIN_PATH)
 
-@app.route('/add_material', methods=methods)
-def add_material():
-    """
-    Returns a page where the user inputs a pdf file which gets watermarked using `watermark()`
-    and gets stored at a local folder
-    """
-    if session[USERNAME]:
-        if request.method == POST:
-            file = request.files[FILE]
-            file.save(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
-            watermark(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
-            db.execute(conn, q.add_material.format(session[USERNAME], file.filename))
-            return redirect('/faculty')
-        else:
-            return render_template("add_material.html")
-    else:
-        return redirect('/faculty_login') 
+# @app.route('/add_material', methods=methods)
+# def add_material():
+#     """
+#     Returns a page where the user inputs a pdf file which gets watermarked using `watermark()`
+#     and gets stored at a local folder
+#     """
+#     if session[USERNAME]:
+#         if request.method == POST:
+#             file = request.files[FILE]
+#             file.save(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
+#             watermark(os.path.join(app.config[UPLOAD_FOLDER], file.filename))
+#             db.execute(conn, q.add_material.format(session[USERNAME], file.filename))
+#             return redirect('/faculty')
+#         else:
+#             return render_template("add_material.html")
+#     else:
+#         return redirect(FACULTY_LOGIN_PATH)
 
 
-@app.route('/view_material', methods=methods)
-def view_material():
-    """
-    Returns a page where the user can view the pdf files uploaded by the faculty
-    """
-    if session[USERNAME]:
-        if request.method == POST:
-            file = request.form[FILE]
-            return redirect('/view_material1')
-        else:
-            files = db.fetch(conn, q.view_material.format(session[USERNAME]))
-            return render_template("view_material.html", files=files, files_len=len(files))
-    else:
-        return redirect('/faculty_login')
 
 
 @app.route("/create_sections", methods=["GET", "POST"])
