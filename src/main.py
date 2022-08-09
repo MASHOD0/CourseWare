@@ -409,9 +409,9 @@ def attendance1():
 
 @app.route("/create_sections", methods=["GET", "POST"])
 def sections():
-    if request.method == "POST":
-        name = request.form["section"]
-        sem = int(request.form["semester"])
+    if request.method == POST:
+        name = request.form[SECTION]
+        sem = int(request.form[SEMESTER])
         db.execute(conn, q.add_sections.format(sem, name))
         return render_template("control.html")
     else:
