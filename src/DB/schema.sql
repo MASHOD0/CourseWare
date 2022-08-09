@@ -49,4 +49,10 @@ CREATE TABLE "section" (
   "section" varchar(4)
 );
 
-
+CREATE TABLE "material" (
+  "material_id" SERIAL PRIMARY KEY,
+  "course_id" int,
+  "section_id" int,
+  "location" varchar(200),
+  "title" varchar(20)
+);
