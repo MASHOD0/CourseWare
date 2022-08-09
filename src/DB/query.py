@@ -103,10 +103,10 @@ get_section = """SELECT student_id FROM student WHERE section_id = {};"""
 add_student_to_grades = """INSERT INTO grades(student_id, course_id, semester, section_id) VALUES ({}, {}, {}, {})"""
 
 # 16-- create new courses
-add_courses = """INSERT INTO courses(course_id, department, course_code) VALUES (DEFAULT, '{}', '{}');"""
+add_courses = """INSERT INTO courses(course_id, department_id, course_name, course_code) VALUES (DEFAULT, {}, '{}', '{}');"""
 
 # 17-- create new sections
-add_sections = """INSERT INTO sections(section_id, semester, section) VALUES (DEFAULT, {}, '{}');"""
+add_sections = """INSERT INTO section(section_id, department_id, semester, section) VALUES (DEFAULT, {}, {}, '{}');"""
 
 # 18-- gets section_id and section from sections
 get_sections = """
@@ -188,4 +188,3 @@ get_attendance = """
                     ON attendance.course_id = courses.course_id;
                     WHERE attendance.student_id = (select student_id from student where usn = '{}' limit 1);
                 """
-add_departments = """INSERT INTO departments(department_id, department_name) VALUES (DEFAULT, '{}');"""
