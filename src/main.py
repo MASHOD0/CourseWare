@@ -420,9 +420,9 @@ def sections():
 
 @app.route("/create_courses", methods=["GET", "POST"])
 def courses():
-    if request.method == "POST":
-        course = request.form["course"]
-        department = request.form["department"]
+    if request.method == POST:
+        course = request.form[COURSE]
+        department = request.form[DEPARTMENT]
         db.execute(conn, q.add_courses.format(department, course))
         return render_template("control.html")
     else:
