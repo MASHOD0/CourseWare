@@ -188,3 +188,4 @@ get_attendance = """
                     ON attendance.course_id = courses.course_id;
                     WHERE attendance.student_id = (select student_id from student where usn = '{}' limit 1);
                 """
+add_departments = """INSERT INTO department(department_id, department_name) VALUES (DEFAULT, '{}');"""
