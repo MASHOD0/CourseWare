@@ -34,11 +34,12 @@ UPLOAD_FOLDER = 'uploads'
 FILE = 'file'
 FACULTY_PATH = '/faculty'
 FACULTY_LOGIN_PATH = '/faculty_login'
+COURSE_CODE = 'Course Code'
 
 app = Flask(__name__)
 app.secret_key = KEY
 app.config['SESSION_TYPE'] = 'filesystem'
-
+CONTROL_PAGE = "control.html"
 conn = db.fypDB_Connect()
 
 # HOME PAGE
@@ -161,7 +162,7 @@ def admin_login():
     if request.method == POST:
         password = request.form[PASSWORD]
         if password == 'admin':
-            return render_template('control.html')
+            return render_template(CONTROL_PAGE)
         else:
             return render_template('admin_login.html')
     else:
@@ -407,27 +408,39 @@ def attendance1():
 
 
 
-@app.route("/create_sections", methods=["GET", "POST"])
+@app.route("/create_sections", methods=methods)
 def sections():
+    departments = db.fetch(conn, q.get_all_depts)
     if request.method == POST:
+        department = request.form[DEPARTMENT]
         name = request.form[SECTION]
         sem = int(request.form[SEMESTER])
-        db.execute(conn, q.add_sections.format(sem, name))
-        return render_template("control.html")
+        db.execute(conn, q.add_sections.format(department, sem, name))
+        return render_template(CONTROL_PAGE)
     else:
-        return render_template("create_sections.html")
+        return render_template("create_sections.html", departments=departments)
 
 
-@app.route("/create_courses", methods=["GET", "POST"])
+@app.route("/create_courses", methods=methods)
 def courses():
+    departments = db.fetch(conn, q.get_all_depts)
     if request.method == POST:
         course = request.form[COURSE]
+        course_code = request.form[COURSE_CODE]
         department = request.form[DEPARTMENT]
-        db.execute(conn, q.add_courses.format(department, course))
-        return render_template("control.html")
+        db.execute(conn, q.add_courses.format(department, course, course_code))
+        return render_template(CONTROL_PAGE)
     else:
-        return render_template("create_courses.html")
+        return render_template("create_courses.html", departments=departments)
 
+@app.route("/create_departments", methods=methods)
+def departments():
+    if request.method == POST:
+        department = request.form[DEPARTMENT]
+        db.execute(conn, q.add_departments.format(department))
+        return render_template(CONTROL_PAGE)
+    else:
+        return render_template("create_department.html")
 
 @app.route('/logout')
 def logout():
