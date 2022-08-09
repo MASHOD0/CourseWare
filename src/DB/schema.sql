@@ -56,3 +56,10 @@ CREATE TABLE "material" (
   "location" varchar(200),
   "title" varchar(20)
 );
+
+CREATE TABLE "courses" (
+  "course_id" SERIAL PRIMARY KEY,
+  "department_id" int,
+  "course_name" varchar(20),
+  "course_code" varchar(10)
+);
