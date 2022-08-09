@@ -73,3 +73,30 @@ CREATE TABLE "classes" (
   "day" varchar(8),
   "time" time
 );
+
+ALTER TABLE "student" ADD FOREIGN KEY ("department_id") REFERENCES "department" ("department_id");
+
+ALTER TABLE "faculty" ADD FOREIGN KEY ("department_id") REFERENCES "department" ("department_id");
+
+ALTER TABLE "courses" ADD FOREIGN KEY ("department_id") REFERENCES "department" ("department_id");
+
+ALTER TABLE "section" ADD FOREIGN KEY ("department_id") REFERENCES "department" ("department_id");
+
+ALTER TABLE "grades" ADD FOREIGN KEY ("student_id") REFERENCES "student" ("student_id");
+
+ALTER TABLE "attendance" ADD FOREIGN KEY ("student_id") REFERENCES "student" ("student_id");
+
+ALTER TABLE "material" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("course_id");
+
+ALTER TABLE "material" ADD FOREIGN KEY ("section_id") REFERENCES "section" ("section_id");
+
+ALTER TABLE "classes" ADD FOREIGN KEY ("faculty_id") REFERENCES "faculty" ("faculty_id");
+
+ALTER TABLE "student" ADD FOREIGN KEY ("section_id") REFERENCES "section" ("section_id");
+
+ALTER TABLE "classes" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("course_id");
+
+ALTER TABLE "attendance" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("course_id");
+
+ALTER TABLE "grades" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("course_id");
+ 
