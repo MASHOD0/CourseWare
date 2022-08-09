@@ -29,3 +29,15 @@ CREATE TABLE "attendance" (
   "missed" int,
   "total" int
 );
+
+
+CREATE TABLE "grades" (
+  "student_id" int,
+  "course_id" int,
+  "semester" int,
+  "cie1" int,
+  "cie2" int,
+  "cie3" int,
+  "aat" int,
+  "see" int
+);
