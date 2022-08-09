@@ -63,3 +63,13 @@ CREATE TABLE "courses" (
   "course_name" varchar(20),
   "course_code" varchar(10)
 );
+
+
+CREATE TABLE "classes" (
+  "class_id" SERIAL PRIMARY KEY,
+  "course_id" int,
+  "faculty_id" int,
+  "link" varchar(100),
+  "day" varchar(8),
+  "time" time
+);
