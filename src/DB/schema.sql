@@ -12,3 +12,11 @@ CREATE TABLE "student" (
   "email" varchar(64),
   "department_id" int
 );
+
+CREATE TABLE "faculty" (
+  "faculty_id" SERIAL PRIMARY KEY,
+  "department_id" int,
+  "name" varchar(60),
+  "password" varchar(64),
+  "email" varchar(64)
+);
