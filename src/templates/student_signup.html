@@ -37,31 +37,9 @@ Student Signup
             </td>
             <TD>
                 <select name='Section'>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                    <option value="H">H</option>
-                    <option value="I">I</option>
-                    <option value="J">J</option>
-                    <option value="K">K</option>
-                    <option value="L">L</option>
-                    <option value="M">M</option>
-                    <option value="N">N</option>
-                    <option value="O">O</option>
-                    <option value="P">P</option>
-                    <option value="Q">Q</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="T">T</option>
-                    <option value="U">U</option>
-                    <option value="V">V</option>
-                    <option value="I">I</option>
-                    <option value="J">J</option>
-                    <option value="K">K</option>
+                    {% for section in sections %}
+                    <option value="{{ section[0] }}">{{section[1] }} -- {{ section[2] }}</option>
+                    {% endfor %}
                 </select>
             </TD>
 
@@ -72,20 +50,9 @@ Student Signup
             </td>
             <TD>
                 <select name='Branch'>
-                    <option value="AE">Areonautical Engineering</option>
-                    <option value="AI">Artifical intelligence and Machine learning</option>
-                    <option value="AU">Automobile Engineering</option>
-                    <option value="BT">Bio-Technology</option>
-                    <option value="CH">Chemical Engineering</option>
-                    <option value="CS">Computer Science and Engineering</option>
-                    <option value="CV">Civil Engineering</option>
-                    <option value="EC">Electronics & Communication Engineering</option>
-                    <option value="EE">Electrical & Electronics Engineering</option>
-                    <option value="ET">Electronics and Telecomunication Engineering</option>
-                    <option value="IM">Industrial Engineering and Management</option>
-                    <option value="IS">Information Science & Engineering</option>
-                    <option value="MD">Electronics and Medical Engineering</option>
-                    <option value="ME">Mechanical Engineering</option>
+                    {% for department in departments %}
+                    <option value="{{ department[0] }}">{{ department[1] }}</option>
+                    {% endfor %}
                 </select>
             </TD>
 

@@ -34,23 +34,9 @@ Faculty Signup
             </td>
             <TD>
                 <select name="Department">
-                    <option value="AE">Areonautical Engineering</option>
-                    <option value="AI">Artifical intelligence and Machine learning</option>
-                    <option value="AU">Automobile Engineering</option>
-                    <option value="BT">Bio-Technology</option>
-                    <option value="CH">Chemical Engineering</option>
-                    <option value="CS">Computer Science and Engineering</option>
-                    <option value="CV">Civil Engineering</option>
-                    <option value="EC">Electronics & Communication Engineering</option>
-                    <option value="EE">Electrical & Electronics Engineering</option>
-                    <option value="ET">Electronics and Telecomunication Engineering</option>
-                    <option value="IM">Industrial Engineering and Management</option>
-                    <option value="IS">Information Science & Engineering</option>
-                    <option value="MD">Electronics and Medical Engineering</option>
-                    <option value="ME">Mechanical Engineering</option>
-                    <option value="PY">Physics </option>
-                    <option value="CE">Chemistry</option>
-                    <option value="MA">Mathematics</option>
+                    {% for department in departments %}
+                    <option value="{{ department[0] }}">{{ department[1] }}</option>
+                    {% endfor %}                   
                 </select>
             </TD>
 
