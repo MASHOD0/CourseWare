@@ -20,3 +20,12 @@ CREATE TABLE "faculty" (
   "password" varchar(64),
   "email" varchar(64)
 );
+
+
+CREATE TABLE "attendance" (
+  "student_id" int,
+  "course_id" int,
+  "semester" int,
+  "missed" int,
+  "total" int
+);
