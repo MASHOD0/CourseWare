@@ -41,3 +41,12 @@ CREATE TABLE "grades" (
   "aat" int,
   "see" int
 );
+
+CREATE TABLE "section" (
+  "section_id" SERIAL PRIMARY KEY,
+  "department_id" int,
+  "semester" int,
+  "section" varchar(4)
+);
+
+
