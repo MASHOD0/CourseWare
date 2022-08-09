@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}
+{% endblock %}
+
+{% block content %}
+<form action="#" method="POST">
+    <select name='Department'>
+        {% for department in departments %}
+        <option value="{{ department[0] }}">{{ department[1] }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="Course" size="47" placeholder="Enter Course Name">
+    <input type="text" name="Course Code" size="47" placeholder="Enter Course Code">
+    <input type="submit" value="submit" />
+</form>
+
+
+{% endblock %}
